@@ -216,3 +216,52 @@
   </script>
 </body>
 </html>
+<!-- Kalkulator Penjumlahan Start -->
+<div style="max-width: 400px; margin: 20px auto; padding: 20px; background-color: #ffffff; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-family: Arial, sans-serif;">
+  <h2 style="margin-top: 0; font-size: 20px;">Kalkulator Penjumlahan</h2>
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+    <input type="text" id="num1" placeholder="Masukkan angka pertama" oninput="formatAndCalculateTempel()" style="padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; text-align: right;" />
+    <input type="text" id="num2" placeholder="Masukkan angka kedua" oninput="formatAndCalculateTempel()" style="padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; text-align: right;" />
+  </div>
+  <div id="result" style="margin-top: 20px; padding: 15px; background-color: #e0f7e0; border: 1px solid #d4edda; border-radius: 8px; font-weight: bold; font-size: 18px;">
+    0 + 0 = 0
+  </div>
+  <button onclick="resetCalculatorTempel()" style="width: 100%; padding: 12px; margin-top: 20px; background-color: #f44336; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+    Hapus
+  </button>
+</div>
+
+<script>
+  function formatNumberTempel(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  function removeThousandSeparatorTempel(num) {
+    return num.replace(/\./g, '');
+  }
+
+  function formatAndCalculateTempel() {
+    var num1 = document.getElementById('num1').value;
+    var num2 = document.getElementById('num2').value;
+
+    var rawNum1 = parseFloat(removeThousandSeparatorTempel(num1)) || 0;
+    var rawNum2 = parseFloat(removeThousandSeparatorTempel(num2)) || 0;
+
+    var sum = rawNum1 + rawNum2;
+
+    var formattedNum1 = formatNumberTempel(rawNum1);
+    var formattedNum2 = formatNumberTempel(rawNum2);
+    var formattedSum = formatNumberTempel(sum);
+
+    document.getElementById('num1').value = formattedNum1;
+    document.getElementById('num2').value = formattedNum2;
+    document.getElementById('result').innerText = `${formattedNum1} + ${formattedNum2} = ${formattedSum}`;
+  }
+
+  function resetCalculatorTempel() {
+    document.getElementById('num1').value = "";
+    document.getElementById('num2').value = "";
+    document.getElementById('result').innerText = "0 + 0 = 0";
+  }
+</script>
+<!-- Kalkulator Penjumlahan End -->
