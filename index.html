@@ -26,7 +26,7 @@
       background: #fff;
       border: 1px solid #ddd;
       border-radius: 8px;
-      padding: 40px;
+      padding: 80px;
       text-align: center;
       font-family: 'Poppins', sans-serif;
       border-top: 3px solid #2980b9;
@@ -200,7 +200,7 @@
 
     function downloadImage() {
       const struk = document.getElementById("strukContainer");
-      html2canvas(struk, { scale: 2 }).then(canvas => {
+      html2canvas(struk, { scale: 1 }).then(canvas => {
         const link = document.createElement("a");
         link.download = 'struk_pembayaran.png';
         link.href = canvas.toDataURL();
