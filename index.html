@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Struk Pembayaran</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f9;
+      padding: 15px;
+      margin: 0;
+    }
+    .container {
+      max-width: 380px;
+      margin: auto;
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    .struk {
+      position: relative;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      border-top: 3px solid #2980b9;
+      border-bottom: 3px solid #2980b9;
+      margin-bottom: 15px;
+    }
+    .judul {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+    .namatoko {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2980b9;
+    }
+    .notrx {
+      font-size: 13px;
+      color: #000;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+    .info {
+      font-size: 14px;
+      text-align: left;
+      margin: 10px 0;
+      border-bottom: 2px solid #ddd;
+    }
+    .info div {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+    .info .label::after {
+      content: ":";
+      margin-left: 4px;
+    }
+    .total {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e74c3c;
+      margin-top: 10px;
+    }
+    .footer {
+      font-size: 12px;
+      color: #000;
+      margin-top: 15px;
+    }
+    .cap-lunas {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-20deg);
+      font-size: 40px;
+      font-weight: bold;
+      color: rgba(39, 174, 96, 0.2);
+      pointer-events: none;
+      z-index: 1;
+    }
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      font-family: 'Poppins', sans-serif;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      overflow-y: auto;
+    }
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+    }
+    .btn-generate { background-color: #27ae60; }
+    .btn-download { background-color: #2980b9; display: none; }
+    .btn-share { background-color: #25d366; display: none; }
+    .credit {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Generator Struk Pembayaran</h2>
+
+    <input type="text" id="namaToko" placeholder="Nama / Toko*">
+    <textarea id="inputText" placeholder="*[SUKSES] ✅* 
+📞 6287730198451
+🔹 XL masa aktif 1bulan
+💰 Rp5.000"></textarea>
+
+    <button class="btn-generate" onclick="generate()">Buat Struk</button>
+    <p></p>
+
+    <div id="strukContainer" class="struk" style="display: none;">
+      <div class="cap-lunas">LUNAS</div>
+      <div class="namatoko" id="tokoDisplay">NAMA TOKO</div>
+      <div class="judul">STRUK PEMBAYARAN</div>
+      <div class="notrx" id="notransaksiVal">TRX1234567890</div>
+      <div class="info">
+        <div><span class="label">Tanggal</span><span id="tanggalVal"></span></div>
+        <div><span class="label">Nomor HP</span><span id="nohpVal"></span></div>
+        <div><span class="label">Produk</span><span id="produkVal"></span></div>
+        <div><span class="label">Harga</span><span id="hargaVal"></span></div>
+      </div>
+      <div style="text-align:left; font-size:14px;">Diterima pembayaran dari pelanggan</div>
+      <div class="total">TOTAL: Rp <span id="totalHarga"></span></div>
+      <div class="footer">Terima kasih telah berbelanja, semoga selalu sehat dan sukses</div>
+      <p style="font-size: 0.5em;">*struk ini sah sebagai bukti resmi pembayaran</p>
+    </div>
+
+    <button class="btn-download" id="downloadBtn" onclick="downloadImage()">Download Gambar</button>
+    <button class="btn-share" id="shareBtn" onclick="shareToWhatsApp()">Bagikan via WhatsApp</button>
+
+    <div class="credit">
+      © SENTRAL | Mitra Bisnis Digital
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    let imageBlob;
+
+    function generate() {
+      const input = document.getElementById("inputText").value;
+      const namaToko = document.getElementById("namaToko").value || "NAMA TOKO";
+      const produk = input.match(/🔹\s*(.*)/);
+      const harga = input.match(/💰\s*Rp([\d.]+)/);
+      const nohp = input.match(/📞\s*(\d+)/);
+      if (!produk || !harga || !nohp) return alert("Format tidak sesuai");
+
+      const now = new Date();
+      const tanggal = now.toLocaleDateString('id-ID', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      }) + " - " + now.toLocaleTimeString('id-ID');
+      const trx = "TRX" + now.getTime();
+
+      document.getElementById("tokoDisplay").innerText = namaToko;
+      document.getElementById("tanggalVal").innerText = tanggal;
+      document.getElementById("notransaksiVal").innerText = trx;
+      document.getElementById("nohpVal").innerText = nohp[1];
+      document.getElementById("produkVal").innerText = produk[1];
+      document.getElementById("hargaVal").innerText = "Rp" + harga[1];
+      document.getElementById("totalHarga").innerText = harga[1];
+
+      const container = document.getElementById("strukContainer");
+      container.style.display = "block";
+      html2canvas(container, { scale: 2 }).then(canvas => {
+        canvas.toBlob(blob => {
+          imageBlob = blob;
+          document.getElementById("downloadBtn").style.display = "block";
+          document.getElementById("shareBtn").style.display = "block";
+        });
+      });
+    }
+
+    function downloadImage() {
+      const struk = document.getElementById("strukContainer");
+      html2canvas(struk, { scale: 2 }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = 'struk_pembayaran.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    function shareToWhatsApp() {
+      if (!imageBlob) return alert("Gambar belum siap!");
+      const shareUrl = "https://wa.me/?text=Berikut%20struk%20pembayaran%20Anda.";
+      window.open(shareUrl, "_blank");
+    }
+  </script>
+</body>
+</html>
