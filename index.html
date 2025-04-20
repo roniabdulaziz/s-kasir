@@ -200,7 +200,7 @@
 
     function downloadImage() {
       const struk = document.getElementById("strukContainer");
-      html2canvas(struk, { scale: 2 }).then(canvas => {
+      html2canvas(struk, { scale: 4 }).then(canvas => {
         const link = document.createElement("a");
         link.download = 'struk_pembayaran.png';
         link.href = canvas.toDataURL();
