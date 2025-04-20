@@ -189,7 +189,7 @@
 
       const container = document.getElementById("strukContainer");
       container.style.display = "block";
-      html2canvas(container, { scale: 3 }).then(canvas => {
+      html2canvas(container, { scale: 8 }).then(canvas => {
         canvas.toBlob(blob => {
           imageBlob = blob;
           document.getElementById("downloadBtn").style.display = "block";
